@@ -21,37 +21,40 @@ const GET_GIFS = gql`
 `;
 
 const SearchAnimals: React.FC = () => {
-  const [filter, setFilter] = useState("1");
+  const [category, setSearchTerm] = useState("");
   const [result, reexecuteQuery] = useQuery<GifsResult>({
     query: GET_GIFS,
-    variables: { category: `%${filter}%` },
+    variables: { category: `%${category}%` },
   });
 
   const { data, fetching, error } = result;
 
   const handleSearchTermChange = (value: string) => {
-    console.log("val: ", value);
-    setFilter(value);
+    setSearchTerm(value);
     reexecuteQuery({ variables: { filter: value } });
   };
 
-  console.log("result :", result.data);
-  console.log("error: ", result.error);
-
-  if (fetching) return <div>Loading...</div>;
   if (error) return <div>Error... {error.message}</div>;
 
   return (
     <>
-      <InputField placeholder="search GIFs" onChange={handleSearchTermChange} />
-      {data && (
-        <ul>
-          {data.gifs.map((gif) => (
-            <li key={gif.id}>
-              <img src={gif.url} alt={gif.id} />
-            </li>
-          ))}
-        </ul>
+      <InputField
+        placeholder="search GIFs"
+        onChange={handleSearchTermChange}
+        value={category}
+      />
+      {fetching ? (
+        <div>Loading...</div>
+      ) : (
+        data && (
+          <ul>
+            {data.gifs.map((gif) => (
+              <li key={gif.id}>
+                <img src={gif.url} alt={gif.id} />
+              </li>
+            ))}
+          </ul>
+        )
       )}
     </>
   );

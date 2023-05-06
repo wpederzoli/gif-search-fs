@@ -9,7 +9,11 @@ describe("InputField", () => {
 
   beforeEach(() => {
     render(
-      <InputField placeholder={dummyLabelText} onChange={mockedOnChange} />
+      <InputField
+        placeholder={dummyLabelText}
+        onChange={mockedOnChange}
+        value=""
+      />
     );
   });
 

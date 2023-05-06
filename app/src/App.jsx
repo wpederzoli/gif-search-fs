@@ -8,7 +8,7 @@ let client = createClient({
 function App() {
   return (
     <Provider value={client}>
-      <div style={{ margin: 24 }}>
+      <div>
         <SearchAnimals />
       </div>
     </Provider>

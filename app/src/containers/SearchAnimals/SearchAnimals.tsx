@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useQuery, gql } from "urql";
 import InputField from "../../components/InputField";
+import * as S from "./SearchAnimals.styles";
 
 type Gif = {
   id: string;
@@ -13,7 +14,7 @@ type GifsResult = {
 
 const GET_GIFS = gql`
   query ($category: String!) {
-    gifs(limit: 5, where: { category: { _like: $category } }) {
+    gifs(limit: 12, where: { category: { _like: $category } }) {
       id
       url
     }
@@ -37,26 +38,27 @@ const SearchAnimals: React.FC = () => {
   if (error) return <div>Error... {error.message}</div>;
 
   return (
-    <>
-      <InputField
-        placeholder="search GIFs"
-        onChange={handleSearchTermChange}
-        value={category}
-      />
+    <S.SearchContainer>
+      <S.SearchTitle>Search animals GIFs</S.SearchTitle>
+      <S.InputWrapper>
+        <InputField
+          placeholder="search GIFs"
+          onChange={handleSearchTermChange}
+          value={category}
+        />
+      </S.InputWrapper>
       {fetching ? (
         <div>Loading...</div>
       ) : (
         data && (
-          <ul>
+          <S.ResultsContainer>
             {data.gifs.map((gif) => (
-              <li key={gif.id}>
-                <img src={gif.url} alt={gif.id} />
-              </li>
+              <S.Gif src={gif.url} alt={gif.id} />
             ))}
-          </ul>
+          </S.ResultsContainer>
         )
       )}
-    </>
+    </S.SearchContainer>
   );
 };
 

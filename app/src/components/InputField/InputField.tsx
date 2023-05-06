@@ -1,4 +1,5 @@
 import React from "react";
+import * as S from "./InputField.styles";
 
 interface InputFieldProps {
   placeholder: string;
@@ -17,7 +18,7 @@ const InputField: React.FC<InputFieldProps> = ({
 
   return (
     <div>
-      <input
+      <S.InputContainer
         type="text"
         placeholder={placeholder}
         onChange={handleChange}

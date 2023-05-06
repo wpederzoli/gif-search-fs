@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useQuery, gql } from "urql";
 import InputField from "../../components/InputField";
 

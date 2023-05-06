@@ -51,11 +51,13 @@ const SearchAnimals: React.FC = () => {
         <div>Loading...</div>
       ) : (
         data && (
-          <S.ResultsContainer>
+          <S.GifWrapper>
             {data.gifs.map((gif) => (
-              <S.Gif src={gif.url} alt={gif.id} />
+              <S.GifCard key={gif.id}>
+                <img src={gif.url} alt={gif.id} />
+              </S.GifCard>
             ))}
-          </S.ResultsContainer>
+          </S.GifWrapper>
         )
       )}
     </S.SearchContainer>

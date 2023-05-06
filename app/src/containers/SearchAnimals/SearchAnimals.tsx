@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery, gql } from "urql";
 import InputField from "../../components/InputField";
 
@@ -12,8 +12,8 @@ type GifsResult = {
 };
 
 const GET_GIFS = gql`
-  query ($filter: String!) {
-    gifs(filter: $filter) {
+  query ($category: String!) {
+    gifs(limit: 5, where: { category: { _like: $category } }) {
       id
       url
     }
@@ -22,16 +22,21 @@ const GET_GIFS = gql`
 
 const SearchAnimals: React.FC = () => {
   const [filter, setFilter] = useState("1");
-  const [result] = useQuery<GifsResult>({
+  const [result, reexecuteQuery] = useQuery<GifsResult>({
     query: GET_GIFS,
-    variables: { filter },
+    variables: { category: `%${filter}%` },
   });
 
   const { data, fetching, error } = result;
 
   const handleSearchTermChange = (value: string) => {
+    console.log("val: ", value);
     setFilter(value);
+    reexecuteQuery({ variables: { filter: value } });
   };
+
+  console.log("result :", result.data);
+  console.log("error: ", result.error);
 
   if (fetching) return <div>Loading...</div>;
   if (error) return <div>Error... {error.message}</div>;

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery, gql } from "urql";
+import { debounce } from "lodash";
 import InputField from "../../components/InputField";
 import * as S from "./SearchAnimals.styles";
 
@@ -22,7 +23,8 @@ const GET_GIFS = gql`
 `;
 
 const SearchAnimals: React.FC = () => {
-  const [category, setSearchTerm] = useState("");
+  const [category, setSearchCategory] = useState("");
+  const [searchValue, setSearchValue] = useState("");
   const [result, reexecuteQuery] = useQuery<GifsResult>({
     query: GET_GIFS,
     variables: { category: `%${category}%` },
@@ -30,21 +32,28 @@ const SearchAnimals: React.FC = () => {
 
   const { data, fetching, error } = result;
 
+  useEffect(() => {
+    reexecuteQuery({ variables: { category: `%${category}%` } });
+  }, [category, reexecuteQuery]);
+
   const handleSearchTermChange = (value: string) => {
-    setSearchTerm(value);
-    reexecuteQuery({ variables: { filter: value } });
+    setSearchValue(value);
+    const debouncedQuery = debounce(
+      (value: string) => setSearchCategory(value),
+      1000
+    );
+    debouncedQuery(value);
   };
 
   if (error) return <div>Error... {error.message}</div>;
 
   return (
     <S.SearchContainer>
-      <S.SearchTitle>Search animals GIFs</S.SearchTitle>
       <S.InputWrapper>
         <InputField
           placeholder="search GIFs"
           onChange={handleSearchTermChange}
-          value={category}
+          value={searchValue}
         />
       </S.InputWrapper>
       {fetching ? (
@@ -52,9 +61,9 @@ const SearchAnimals: React.FC = () => {
       ) : (
         data && (
           <S.GifWrapper>
-            {data.gifs.map((gif) => (
+            {data.gifs.map((gif, index) => (
               <S.GifCard key={gif.id}>
-                <img src={gif.url} alt={gif.id} />
+                <S.GifImage src={gif.url} alt={gif.id} delay={index * 100} />
               </S.GifCard>
             ))}
           </S.GifWrapper>

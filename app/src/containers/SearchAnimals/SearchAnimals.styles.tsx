@@ -1,5 +1,27 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+
+const fadeIn = keyframes`
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+`;
+
+export const GifImage = styled.img<{ delay: number }>`
+  width: 100%;
+  height: 200px;
+  opacity: 1;
+  object-fit: cover;
+  border-radius: 10px;
+  animation: ${fadeIn} 0.5s ease forwards;
+  animation-delay: ${({ delay }) => delay}ms;
+  opacity: 0;
+`;
 
 export const SearchContainer = styled.div`
   display: flex;
@@ -9,12 +31,6 @@ export const SearchContainer = styled.div`
   background: linear-gradient(to bottom, #4a4e69, #c9ada7);
   min-height: 100vh;
   padding: 20px;
-`;
-
-export const SearchTitle = styled.div`
-  font-size: 48px;
-  margin-bottom: 20px;
-  color: #ff6f91;
 `;
 
 export const InputWrapper = styled.div`
@@ -39,7 +55,6 @@ export const GifCard = styled.div`
   width: 200px;
   height: 200px;
   border-radius: 10px;
-  background-color: #fff;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
 
   img {

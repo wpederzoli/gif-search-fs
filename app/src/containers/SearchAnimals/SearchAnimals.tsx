@@ -58,6 +58,7 @@ const SearchAnimals: React.FC = () => {
   const handleSearchTermChange = (value: string) => {
     setSearchValue(value);
     //TODO: cancel operation if new input within execution time
+    //maybe a setTimeout will be better
     const debouncedQuery = debounce((value: string) => {
       setSearchCategory(value);
       setOffset(0);
@@ -82,14 +83,14 @@ const SearchAnimals: React.FC = () => {
           value={searchValue}
         />
       </S.InputWrapper>
-      {fetching ? (
+      {fetching && !data ? (
         <div>Loading...</div>
       ) : (
         loadedGifs && (
           <>
             <S.GifWrapper>
               {loadedGifs.map((gif, index) => (
-                <S.GifCard key={gif.id} delay={index * 10}>
+                <S.GifCard key={gif.id}>
                   {index > lastIndex.current - 12 ? (
                     <S.GifImageAnimate
                       src={gif.url}

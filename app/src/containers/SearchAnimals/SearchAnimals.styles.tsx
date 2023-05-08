@@ -51,7 +51,7 @@ export const GifWrapper = styled.div`
   gap: 2rem;
 `;
 
-export const GifCard = styled.div<{ delay: number }>`
+export const GifCard = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -59,9 +59,6 @@ export const GifCard = styled.div<{ delay: number }>`
   height: 200px;
   border-radius: 10px;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-  animation: ${fadeIn} 0.2s ease forwards;
-  animation-delay: ${({ delay }) => delay}ms;
-  opacity: 0;
 
   img {
     width: 100%;

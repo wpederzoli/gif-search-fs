@@ -60,7 +60,6 @@ export const GifProvider = ({ children }: { children: ReactNode }) => {
   const [result, reexecuteQuery] = useQuery<GifsResult>({
     query: GET_GIFS,
     variables: { category: `%${category}%`, offset },
-    pause: true,
   });
 
   const { data, fetching, error } = result;

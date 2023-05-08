@@ -3,6 +3,7 @@ import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { Client, Provider } from "urql";
 import SearchAnimals from "./SearchAnimals";
+import { GifProvider } from "../../contexts/Gifs/GifContext";
 
 const mockedData = [
   { id: 1, url: "dummyURL1" },
@@ -18,7 +19,9 @@ mockClient.executeQuery = () =>
 const renderComponent = () => {
   render(
     <Provider value={mockClient}>
-      <SearchAnimals />
+      <GifProvider>
+        <SearchAnimals />
+      </GifProvider>
     </Provider>
   );
 };

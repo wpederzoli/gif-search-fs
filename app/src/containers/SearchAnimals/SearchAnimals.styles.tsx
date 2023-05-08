@@ -31,7 +31,7 @@ export const SearchContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(to bottom, #4a4e69, #c9ada7);
+  background: linear-gradient(to bottom, #c8ebc5, #f8fff7);
   min-height: 100vh;
   padding: 20px;
 `;

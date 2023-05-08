@@ -3,6 +3,7 @@ import { useQuery, gql } from "urql";
 import { debounce } from "lodash";
 import InputField from "../../components/InputField";
 import * as S from "./SearchAnimals.styles";
+import { CategoryIconsBar } from "../../components/CategoryIconsBar/CategoryIconsBar";
 
 type Gif = {
   id: string;
@@ -92,6 +93,7 @@ const SearchAnimals: React.FC = () => {
 
   return (
     <S.SearchContainer>
+      <CategoryIconsBar />
       <S.InputWrapper>
         <InputField
           placeholder="search GIFs"

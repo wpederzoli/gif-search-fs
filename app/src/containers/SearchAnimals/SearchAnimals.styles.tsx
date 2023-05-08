@@ -12,12 +12,15 @@ const fadeIn = keyframes`
   }
 `;
 
-export const GifImage = styled.img<{ delay: number }>`
+export const GifImage = styled.img`
   width: 100%;
   height: 200px;
   opacity: 1;
   object-fit: cover;
   border-radius: 10px;
+`;
+
+export const GifImageAnimate = styled(GifImage) <{ delay: number }>`
   animation: ${fadeIn} 0.5s ease forwards;
   animation-delay: ${({ delay }) => delay}ms;
   opacity: 0;
@@ -48,7 +51,7 @@ export const GifWrapper = styled.div`
   gap: 2rem;
 `;
 
-export const GifCard = styled.div`
+export const GifCard = styled.div<{ delay: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -56,6 +59,9 @@ export const GifCard = styled.div`
   height: 200px;
   border-radius: 10px;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  animation: ${fadeIn} 0.2s ease forwards;
+  animation-delay: ${({ delay }) => delay}ms;
+  opacity: 0;
 
   img {
     width: 100%;

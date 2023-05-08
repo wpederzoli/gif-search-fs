@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useQuery, gql } from "urql";
 import { debounce } from "lodash";
 import InputField from "../../components/InputField";
@@ -39,6 +39,8 @@ const SearchAnimals: React.FC = () => {
     pause: true,
   });
 
+  const lastIndex = useRef<number>(0);
+
   const { data, fetching, error } = result;
 
   useEffect(() => {
@@ -46,14 +48,21 @@ const SearchAnimals: React.FC = () => {
   }, [category, reexecuteQuery]);
 
   useEffect(() => {
-    setLoadedGifs((prev) => [...prev, ...(data?.gifs ?? [])]);
+    setLoadedGifs((prev) => {
+      const newLoadedGifs = [...prev, ...(data?.gifs ?? [])];
+      lastIndex.current = newLoadedGifs.length - 1;
+      return newLoadedGifs;
+    });
   }, [data]);
 
   const handleSearchTermChange = (value: string) => {
     setSearchValue(value);
+    //TODO: cancel operation if new input within execution time
     const debouncedQuery = debounce((value: string) => {
       setSearchCategory(value);
       setOffset(0);
+      setLoadedGifs([]);
+      lastIndex.current = 0;
     }, 1000);
     debouncedQuery(value);
   };
@@ -80,8 +89,16 @@ const SearchAnimals: React.FC = () => {
           <>
             <S.GifWrapper>
               {loadedGifs.map((gif, index) => (
-                <S.GifCard key={gif.id}>
-                  <S.GifImage src={gif.url} alt={gif.id} delay={index * 50} />
+                <S.GifCard key={gif.id} delay={index * 10}>
+                  {index > lastIndex.current - 12 ? (
+                    <S.GifImageAnimate
+                      src={gif.url}
+                      alt={gif.id}
+                      delay={(index - (lastIndex.current - 12)) * 100}
+                    />
+                  ) : (
+                    <S.GifImage src={gif.url} alt={gif.id} />
+                  )}
                 </S.GifCard>
               ))}
             </S.GifWrapper>

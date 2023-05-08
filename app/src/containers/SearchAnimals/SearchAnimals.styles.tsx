@@ -69,3 +69,28 @@ export const GifCard = styled.div`
     transform: scale(1.05);
   }
 `;
+
+export const LoadMoreButton = styled.button`
+  background-color: #c8ebc5;
+  color: #f8fff7;
+  text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  margin-top: 25px;
+  width: 25%;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background - color 0.2s ease -in -out;
+
+  &:hover {
+    background-color: #a0d2b9;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px #7da7a1;
+  }
+`;

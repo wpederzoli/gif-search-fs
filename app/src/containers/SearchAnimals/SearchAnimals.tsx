@@ -63,7 +63,9 @@ const SearchAnimals: React.FC = () => {
             {loadedGifs.map((gif, index) => renderGif(gif, index))}
           </S.GifWrapper>
           {loadedGifs.length && (
-            <button onClick={handleLoadMoreClick}>Load more</button>
+            <S.LoadMoreButton onClick={handleLoadMoreClick}>
+              Load more
+            </S.LoadMoreButton>
           )}
         </>
       ) : (

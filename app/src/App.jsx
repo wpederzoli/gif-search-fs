@@ -1,4 +1,5 @@
 import { createClient, Provider } from "urql";
+import { GifProvider } from "./contexts/Gifs/GifContext";
 import SearchAnimals from "./containers/SearchAnimals/SearchAnimals";
 
 let client = createClient({
@@ -8,7 +9,9 @@ let client = createClient({
 function App() {
   return (
     <Provider value={client}>
-      <SearchAnimals />
+      <GifProvider>
+        <SearchAnimals />
+      </GifProvider>
     </Provider>
   );
 }

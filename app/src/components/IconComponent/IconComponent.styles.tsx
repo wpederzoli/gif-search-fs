@@ -35,5 +35,4 @@ export const IconContainer = styled.div`
     color: #6dc5a3;
     font-size: 24px;
   }
-  }
 `;

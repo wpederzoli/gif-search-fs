@@ -4,11 +4,14 @@ import * as S from "./IconComponent.styles";
 
 type IconProps = {
   icon: IconType;
+  onClick: () => void;
 };
 
-const IconComponent: React.FC<IconProps> = ({ icon }) => {
+const IconComponent: React.FC<IconProps> = ({ icon, onClick }) => {
   return (
-    <S.IconContainer>{React.createElement(icon, { size: 50 })}</S.IconContainer>
+    <S.IconContainer onClick={onClick}>
+      {React.createElement(icon, { size: 50 })}
+    </S.IconContainer>
   );
 };
 

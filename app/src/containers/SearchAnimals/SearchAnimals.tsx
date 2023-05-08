@@ -1,74 +1,28 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useQuery, gql } from "urql";
-import { debounce } from "lodash";
+import React, { useState } from "react";
 import InputField from "../../components/InputField";
 import * as S from "./SearchAnimals.styles";
 import { CategoryIconsBar } from "../../components/CategoryIconsBar/CategoryIconsBar";
-
-type Gif = {
-  id: string;
-  url: string;
-};
-
-type GifsResult = {
-  gifs: Gif[];
-};
-
-const GET_GIFS = gql`
-  query ($category: String!, $offset: Int!) {
-    gifs(
-      where: { category: { _like: $category } }
-      order_by: { id: asc }
-      offset: $offset
-      limit: 12
-    ) {
-      id
-      url
-    }
-  }
-`;
-
-const CHUNK_SIZE = 12;
+import useGifsContext, {
+  CHUNK_SIZE,
+  Gif,
+} from "../../contexts/Gifs/GifContext";
 
 const SearchAnimals: React.FC = () => {
-  const [category, setSearchCategory] = useState("");
   const [searchValue, setSearchValue] = useState("");
-  //TODO: useref for offset
-  const [offset, setOffset] = useState(0);
-  const [loadedGifs, setLoadedGifs] = useState<Gif[]>([]);
 
-  const lastIndex = useRef<number>(0);
-
-  const [result, reexecuteQuery] = useQuery<GifsResult>({
-    query: GET_GIFS,
-    variables: { category: `%${category}%`, offset },
-    pause: true,
-  });
-
-  const { data, fetching, error } = result;
-
-  useEffect(() => {
-    reexecuteQuery({ variables: { category: `%${category}%`, offset } });
-  }, [category, reexecuteQuery]);
-
-  useEffect(() => {
-    setLoadedGifs((prev) => {
-      const newLoadedGifs = [...prev, ...(data?.gifs ?? [])];
-      lastIndex.current = newLoadedGifs.length - 1;
-      return newLoadedGifs;
-    });
-  }, [data]);
+  const {
+    changeCategory,
+    setOffset,
+    lastIndex,
+    error,
+    fetching,
+    data,
+    loadedGifs,
+  } = useGifsContext();
 
   const handleSearchTermChange = (value: string) => {
     setSearchValue(value);
-    //TODO: improve re-fetching by canceling outdated fetch
-    const debouncedQuery = debounce((value: string) => {
-      setSearchCategory(value);
-      setOffset(0);
-      setLoadedGifs([]);
-      lastIndex.current = 0;
-    }, 1000);
-    debouncedQuery(value);
+    changeCategory(value);
   };
 
   const handleLoadMoreClick = () => {
@@ -77,11 +31,11 @@ const SearchAnimals: React.FC = () => {
 
   const renderGif = (gif: Gif, index: number) => (
     <S.GifCard key={gif.id}>
-      {index > lastIndex.current - CHUNK_SIZE ? (
+      {index > lastIndex - CHUNK_SIZE ? (
         <S.GifImageAnimate
           src={gif.url}
           alt={gif.id}
-          delay={(index - (lastIndex.current - CHUNK_SIZE)) * 100}
+          delay={(index - (lastIndex - CHUNK_SIZE)) * 100}
         />
       ) : (
         <S.GifImage src={gif.url} alt={gif.id} />

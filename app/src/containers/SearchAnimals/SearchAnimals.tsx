@@ -57,17 +57,17 @@ const SearchAnimals: React.FC = () => {
       </S.InputWrapper>
       {fetching && !data ? (
         <div>Loading...</div>
+      ) : loadedGifs.length > 0 ? (
+        <>
+          <S.GifWrapper>
+            {loadedGifs.map((gif, index) => renderGif(gif, index))}
+          </S.GifWrapper>
+          {loadedGifs.length && (
+            <button onClick={handleLoadMoreClick}>Load more</button>
+          )}
+        </>
       ) : (
-        loadedGifs && (
-          <>
-            <S.GifWrapper>
-              {loadedGifs.map((gif, index) => renderGif(gif, index))}
-            </S.GifWrapper>
-            {loadedGifs.length && (
-              <button onClick={handleLoadMoreClick}>Load more</button>
-            )}
-          </>
-        )
+        <div>No gifs...</div>
       )}
     </S.SearchContainer>
   );

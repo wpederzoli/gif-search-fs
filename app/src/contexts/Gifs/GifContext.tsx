@@ -36,7 +36,9 @@ export const CHUNK_SIZE = 12;
 
 type GifContextType = {
   loadedGifs: Gif[];
+  setLoadedGifs: React.Dispatch<React.SetStateAction<Gif[]>>;
   category: string;
+  setCategory: React.Dispatch<React.SetStateAction<string>>;
   lastIndex: number;
   offset: number;
   setOffset: React.Dispatch<React.SetStateAction<number>>;
@@ -90,7 +92,9 @@ export const GifProvider = ({ children }: { children: ReactNode }) => {
     <GifContext.Provider
       value={{
         category,
+        setCategory,
         loadedGifs,
+        setLoadedGifs,
         offset,
         setOffset,
         lastIndex: lastIndex.current,

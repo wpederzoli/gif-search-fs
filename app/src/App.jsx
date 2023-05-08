@@ -8,9 +8,7 @@ let client = createClient({
 function App() {
   return (
     <Provider value={client}>
-      <div>
-        <SearchAnimals />
-      </div>
+      <SearchAnimals />
     </Provider>
   );
 }

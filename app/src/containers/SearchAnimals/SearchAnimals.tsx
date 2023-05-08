@@ -32,16 +32,17 @@ const CHUNK_SIZE = 12;
 const SearchAnimals: React.FC = () => {
   const [category, setSearchCategory] = useState("");
   const [searchValue, setSearchValue] = useState("");
+  //TODO: useref for offset
   const [offset, setOffset] = useState(0);
   const [loadedGifs, setLoadedGifs] = useState<Gif[]>([]);
+
+  const lastIndex = useRef<number>(0);
 
   const [result, reexecuteQuery] = useQuery<GifsResult>({
     query: GET_GIFS,
     variables: { category: `%${category}%`, offset },
     pause: true,
   });
-
-  const lastIndex = useRef<number>(0);
 
   const { data, fetching, error } = result;
 
@@ -59,6 +60,7 @@ const SearchAnimals: React.FC = () => {
 
   const handleSearchTermChange = (value: string) => {
     setSearchValue(value);
+    //TODO: improve re-fetching by canceling outdated fetch
     const debouncedQuery = debounce((value: string) => {
       setSearchCategory(value);
       setOffset(0);

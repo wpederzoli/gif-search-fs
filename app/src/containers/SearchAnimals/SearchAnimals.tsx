@@ -27,6 +27,8 @@ const GET_GIFS = gql`
   }
 `;
 
+const CHUNK_SIZE = 12;
+
 const SearchAnimals: React.FC = () => {
   const [category, setSearchCategory] = useState("");
   const [searchValue, setSearchValue] = useState("");
@@ -57,8 +59,6 @@ const SearchAnimals: React.FC = () => {
 
   const handleSearchTermChange = (value: string) => {
     setSearchValue(value);
-    //TODO: cancel operation if new input within execution time
-    //maybe a setTimeout will be better
     const debouncedQuery = debounce((value: string) => {
       setSearchCategory(value);
       setOffset(0);
@@ -69,8 +69,22 @@ const SearchAnimals: React.FC = () => {
   };
 
   const handleLoadMoreClick = () => {
-    setOffset((prevOffset) => prevOffset + 12);
+    setOffset((prevOffset) => prevOffset + CHUNK_SIZE);
   };
+
+  const renderGif = (gif: Gif, index: number) => (
+    <S.GifCard key={gif.id}>
+      {index > lastIndex.current - CHUNK_SIZE ? (
+        <S.GifImageAnimate
+          src={gif.url}
+          alt={gif.id}
+          delay={(index - (lastIndex.current - CHUNK_SIZE)) * 100}
+        />
+      ) : (
+        <S.GifImage src={gif.url} alt={gif.id} />
+      )}
+    </S.GifCard>
+  );
 
   if (error) return <div>Error... {error.message}</div>;
 
@@ -89,19 +103,7 @@ const SearchAnimals: React.FC = () => {
         loadedGifs && (
           <>
             <S.GifWrapper>
-              {loadedGifs.map((gif, index) => (
-                <S.GifCard key={gif.id}>
-                  {index > lastIndex.current - 12 ? (
-                    <S.GifImageAnimate
-                      src={gif.url}
-                      alt={gif.id}
-                      delay={(index - (lastIndex.current - 12)) * 100}
-                    />
-                  ) : (
-                    <S.GifImage src={gif.url} alt={gif.id} />
-                  )}
-                </S.GifCard>
-              ))}
+              {loadedGifs.map((gif, index) => renderGif(gif, index))}
             </S.GifWrapper>
             {loadedGifs.length && (
               <button onClick={handleLoadMoreClick}>Load more</button>

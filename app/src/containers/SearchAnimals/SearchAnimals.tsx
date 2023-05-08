@@ -14,8 +14,13 @@ type GifsResult = {
 };
 
 const GET_GIFS = gql`
-  query ($category: String!, $limit: Int!) {
-    gifs(limit: $limit, where: { category: { _like: $category } }) {
+  query ($category: String!, $offset: Int!) {
+    gifs(
+      where: { category: { _like: $category } }
+      order_by: { id: asc }
+      offset: $offset
+      limit: 12
+    ) {
       id
       url
     }
@@ -25,29 +30,36 @@ const GET_GIFS = gql`
 const SearchAnimals: React.FC = () => {
   const [category, setSearchCategory] = useState("");
   const [searchValue, setSearchValue] = useState("");
-  const [limit, setLimit] = useState(12);
+  const [offset, setOffset] = useState(0);
+  const [loadedGifs, setLoadedGifs] = useState<Gif[]>([]);
+
   const [result, reexecuteQuery] = useQuery<GifsResult>({
     query: GET_GIFS,
-    variables: { category: `%${category}%`, limit },
+    variables: { category: `%${category}%`, offset },
+    pause: true,
   });
 
   const { data, fetching, error } = result;
 
   useEffect(() => {
-    reexecuteQuery({ variables: { category: `%${category}%`, limit } });
+    reexecuteQuery({ variables: { category: `%${category}%`, offset } });
   }, [category, reexecuteQuery]);
+
+  useEffect(() => {
+    setLoadedGifs((prev) => [...prev, ...(data?.gifs ?? [])]);
+  }, [data]);
 
   const handleSearchTermChange = (value: string) => {
     setSearchValue(value);
     const debouncedQuery = debounce((value: string) => {
       setSearchCategory(value);
-      setLimit(12);
+      setOffset(0);
     }, 1000);
     debouncedQuery(value);
   };
 
   const handleLoadMoreClick = () => {
-    setLimit((prevLimit) => prevLimit + 12);
+    setOffset((prevOffset) => prevOffset + 12);
   };
 
   if (error) return <div>Error... {error.message}</div>;
@@ -64,16 +76,16 @@ const SearchAnimals: React.FC = () => {
       {fetching ? (
         <div>Loading...</div>
       ) : (
-        data && (
+        loadedGifs && (
           <>
             <S.GifWrapper>
-              {data.gifs.map((gif, index) => (
+              {loadedGifs.map((gif, index) => (
                 <S.GifCard key={gif.id}>
-                  <S.GifImage src={gif.url} alt={gif.id} delay={index * 100} />
+                  <S.GifImage src={gif.url} alt={gif.id} delay={index * 50} />
                 </S.GifCard>
               ))}
             </S.GifWrapper>
-            {data.gifs.length >= limit && (
+            {loadedGifs.length && (
               <button onClick={handleLoadMoreClick}>Load more</button>
             )}
           </>

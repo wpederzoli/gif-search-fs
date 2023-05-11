@@ -1,3 +1,6 @@
+# Gif search app
+This repo is a PoC for solving the scenario described below.
+
 # The test
 
 Our product owners have tasked us with building an app that helps our patients' kids have something to entertain themselves with while they wait for their appointments.
